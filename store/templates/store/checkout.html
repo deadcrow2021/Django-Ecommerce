@@ -1,0 +1,115 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block content %}
+<div id="form__block">
+    <form id="form" action="">
+        <div id="user-info">
+            <input required type="text" name="name" placeholder="Name">
+            <input required type="text" name="email" placeholder="Email">
+        </div>
+        <div id="shipping-info">
+            <input type="text" name="address" placeholder="Address">
+            <input type="text" name="city" placeholder="City">
+            <input type="text" name="state" placeholder="State">
+            <input type="text" name="zipcode" placeholder="Zip Code">
+        </div>
+        <input id="form-button" type="submit" value="Continue">
+    </form>
+</div>
+<div id="payment-info" class="hidden">
+    <p>PayPal Options</p>
+    <button id="make-payment">Make Payment</button>
+</div>
+
+{% for item in items %}
+<p>{{ item.product.name }}</p>
+<p>Price: {{ item.product.price|floatformat:2 }}</p>
+<p>Quantity: {{ item.quantity }}</p>
+<p>Total: {{ item.get_total }}</p>
+<br>
+{% endfor %}
+<p>Items: {{ order.get_cart_total|floatformat:2 }}</p>
+<p>Total: {{ order.get_cart_items }}</p>
+<script type="text/javascript">
+    let shipping = '{{ order.shipping }}'
+    let total = '{{ order.get_cart_total }}'
+
+    if(shipping == 'False'){
+        document.getElementById('shipping-info').innerHTML = '';
+    };
+
+    if (user != 'AnonymousUser'){
+        document.getElementById('user-info').innerHTML = '';
+    }
+
+    if (shipping == 'False' && user != 'AnonymousUser'){
+        document.getElementById('form__block').classList.add('hidden');
+        document.getElementById('payment-info').classList.remove('hidden');
+    }
+
+    let form = document.getElementById('form');
+
+    form.addEventListener('submit', function(event){
+        event.preventDefault();
+        console.log('Form was submitted...');
+        document.getElementById('form-button').classList.add('hidden');
+        document.getElementById('payment-info').classList.remove('hidden');
+    })
+
+    document.getElementById('make-payment').addEventListener('click', function(event){
+        submitFormData()
+    })
+
+    function submitFormData(){
+        console.log('Payment button clicked')
+
+        let userFormData = {
+            'name':null,
+            'email':null,
+            'total':total
+        }
+
+        let shippingInfo = {
+            'address':null,
+            'city':null,
+            'state':null,
+            'zipcode':null
+        }
+
+        if (shipping != 'False'){
+            shippingInfo.address = form.address.value;
+            shippingInfo.city = form.city.value;
+            shippingInfo.state = form.state.value;
+            shippingInfo.zipcode = form.zipcode.value;
+        }
+
+        if (user == 'AnonymousUser'){
+            userFormData.name = form.name.value;
+            userFormData.email = form.email.value;
+        }
+        let url = '/process_order/'
+    
+        fetch(url, {
+            method:'POST',
+            headers:{
+                'Content-Type':'application/json',
+                'X-CSRFToken':csrftoken,
+            },
+            body:JSON.stringify({'form':userFormData, 'shipping':shippingInfo})
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            console.log('Success:', data);
+            alert('Transaction has been completed!');
+
+        cart = {}
+        document.cookie = 'cart=' + JSON.stringify(cart) + ';domain=;path=/'
+
+            window.location.href = "{% url 'store' %}";
+        })
+    }
+
+
+</script>
+{% endblock %}

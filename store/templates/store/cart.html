@@ -1,0 +1,21 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block content %}
+<a href="{% url 'checkout' %}">Checkout</a>
+<p>Items: {{ order.get_cart_total|floatformat:2 }}</p>
+<p>Total: {{ order.get_cart_items }}</p>
+<br>
+{% for item in items %}
+    <p>{{ item.product.name }}</p>
+    <p>Price: {{ item.product.price|floatformat:2 }}</p>
+    <p>Quantity: {{ item.quantity }}</p>
+    <div class="change-quantity">
+        <img data-product="{{ item.product.id }}" data-action="add" class="update-cart" src="{% static 'media/arrow_up.png' %}">
+        <img data-product="{{ item.product.id }}" data-action="remove" class="update-cart" src="{% static 'media/arrow_down.png' %}">
+    </div>
+    <p>Total: {{ item.get_total }}</p>
+    <br>
+{% endfor %}
+
+{% endblock %}
