@@ -6,6 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'css/style-ecommerce.css' %}">
+    <link rel="shortcut icon" href="{% static 'media/favicon.ico' %}" type="image/x-icon">
+
     <script type="text/javascript">
         let user = '{{ request.user }}'
 
@@ -47,14 +49,37 @@
         console.log('Cart:', cart)
 
     </script>
+
     <title>Ecommerce</title>
 </head>
 <body>
-    <ul>
-        <li><a href="{% url 'store' %}">Ecom</a></li>
-        <li><a href="{% url 'cart' %}">Cart</a></li>
-      </ul>
-      <p>Cart: {{ cartItems }}</p>
+    <div class="navbar">
+        <div class="navbar__row">
+
+            <div class="navbar__element">
+                <div class="navbar__content">
+                    <a href="{% url 'store' %}">Ecom</a>
+                </div>
+            </div>
+
+            <div class="navbar__element">
+                <div class="navbar__content">
+                    <a href="{% url 'cart' %}">Cart</a>
+                </div>
+            </div>
+
+            <div class="navbar__element3">
+                <div class="navbar__content">
+                    {% if cartItems > 99 %}
+                        <p>Cart: <span id="cart_number">99+</span></p>
+                    {% else %}
+                        <p>Cart: <span id="cart_number">{{ cartItems }}</span></p>
+                    {% endif %}
+                </div>
+            </div>
+
+        </div>
+    </div>
     {% block content %}
     {% endblock %}
 

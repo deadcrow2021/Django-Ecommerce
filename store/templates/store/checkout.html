@@ -2,35 +2,117 @@
 {% load static %}
 
 {% block content %}
-<div id="form__block">
-    <form id="form" action="">
-        <div id="user-info">
-            <input required type="text" name="name" placeholder="Name">
-            <input required type="text" name="email" placeholder="Email">
+<div class="page__block">
+    <div class="form__block">
+
+        <form id="form" action="">
+            <div id="user-info">
+
+                <div class="input__block">
+                    <input required type="text" name="name" placeholder="Name">
+                </div>
+
+                <div class="input__block">
+                    <input required type="text" name="email" placeholder="Email">
+                </div>
+
+            </div>
+
+            <div id="shipping-info">
+
+                <div class="input__block">
+                    <input type="text" name="address" placeholder="Address">
+                </div>
+
+                <div class="input__block">
+                    <input type="text" name="city" placeholder="City">
+                </div>
+
+                <div class="input__block">
+                    <input type="text" name="state" placeholder="State">
+                </div>
+
+                <div class="input__block">
+                    <input type="text" name="zipcode" placeholder="Zip Code">
+                </div>
+                
+            </div>
+            <input id="form-button" type="submit" value="Continue">
+        </form>
+
+        <div id="payment-info" class="hidden">
+
+            <div id="paypal">
+                <p>PayPal Options</p>
+                <button id="form-button">Make Payment</button>
+            </div>
+
         </div>
-        <div id="shipping-info">
-            <input type="text" name="address" placeholder="Address">
-            <input type="text" name="city" placeholder="City">
-            <input type="text" name="state" placeholder="State">
-            <input type="text" name="zipcode" placeholder="Zip Code">
+
+    </div>
+
+
+    <div class="items__block">
+
+        <div class="items__row">
+
+            <div class="items__element total">
+                <div class="items__content total__p">
+                    <p>Items: {{ order.get_cart_items }}</p>
+                </div>
+            </div>
+            
+            <div class="items__element total">
+                <div class="items__content total__p">
+                    <p>Total: ${{ order.get_cart_total|floatformat:2 }}</p>
+                </div>
+            </div>
+
         </div>
-        <input id="form-button" type="submit" value="Continue">
-    </form>
-</div>
-<div id="payment-info" class="hidden">
-    <p>PayPal Options</p>
-    <button id="make-payment">Make Payment</button>
+        
+        {% for item in items %}
+        
+        <div class="items__row">
+
+            <div class="items__element">
+                <div class="items__content">
+                    <img class="cart__image checkout__image" src="{{ item.product.imageURL }}">
+                </div>
+            </div>
+            
+            <div class="items__element">
+                <div class="items__content">
+                    <p>{{ item.product.name }}</p>
+                </div>
+            </div>
+    
+            <div class="items__element">
+                <div class="items__content">
+                    <p>Price: {{ item.product.price|floatformat:2 }}</p>
+                </div>
+            </div>
+    
+            <div class="items__element">
+                <div class="items__content">
+                    <p>Quantity: {{ item.quantity }}</p>
+                </div>
+            </div>
+    
+            <div class="items__element">
+                <div class="items__content">
+                    <p>Total: {{ item.get_total }}</p>
+                </div>
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
 </div>
 
-{% for item in items %}
-<p>{{ item.product.name }}</p>
-<p>Price: {{ item.product.price|floatformat:2 }}</p>
-<p>Quantity: {{ item.quantity }}</p>
-<p>Total: {{ item.get_total }}</p>
-<br>
-{% endfor %}
-<p>Items: {{ order.get_cart_total|floatformat:2 }}</p>
-<p>Total: {{ order.get_cart_items }}</p>
+
+
 <script type="text/javascript">
     let shipping = '{{ order.shipping }}'
     let total = '{{ order.get_cart_total }}'

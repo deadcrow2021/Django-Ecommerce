@@ -2,15 +2,28 @@
 {% load static %}
 
 {% block content %}
-<h1>Store</h1>
+<div class="store">
+    <div class="store__row">
 
-{% for product in products %}
-<div class="product">
-    <img src="{{ product.imageURL }}">
-    <p>{{ product.name}}</p>
-    <p>Price: {{ product.price|floatformat:2 }}</p>
-    <button class="update-cart" data-product="{{ product.id }}" data-action="add">Add to cart</button>
-    <br>
+        {% for product in products %}
+
+            <div class="store__element">
+                <div class="store__content">
+                    <img src="{{ product.imageURL }}">
+                    <p class="product_name">{{ product.name}}</p>
+                    <p class="product_description">
+                        <span>Price: ${{ product.price|floatformat:2 }}</span>
+                        <button class="update-cart" data-product="{{ product.id }}" data-action="add">Add to cart</button>
+                    </p>
+                    
+                    <br>
+                </div>
+            </div>
+
+        {% endfor %}
+
+    </div>
 </div>
-{% endfor %}
+
+
 {% endblock %}
